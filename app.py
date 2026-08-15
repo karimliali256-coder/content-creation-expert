@@ -33,10 +33,10 @@ if api_key:
   genai.configure(api_key=api_key)
 
   # Canlı Google Search aləti qoşulmuş model
-  model = genai.GenerativeModel(
+ model = genai.GenerativeModel(
     model_name="gemini-1.5-flash",
     system_instruction=SYSTEM_INSTRUCTION,
-    tools=[{"google_search": {}}],
+    tools="google_search_retrieval",
 )
 
   # Session State (Yaddaş)
