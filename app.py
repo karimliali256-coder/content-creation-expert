@@ -3,7 +3,7 @@ import time
 import google.generativeai as genai
 import streamlit as st
 
-# Səhifə Tənzimləmələri
+# Səhifə Konfiqurasiyası
 st.set_page_config(
     page_title="Viral Creator AI",
     page_icon="🚀",
@@ -11,7 +11,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# ULTRA-CLEAN CUSTOM UI CSS
+# ULTRA-CLEAN UI & INTEGRATED CHAT BAR CSS
 st.markdown(
     """
     <style>
@@ -29,7 +29,7 @@ st.markdown(
 
     .block-container {
         padding-top: 1.5rem !important;
-        padding-bottom: 6rem !important;
+        padding-bottom: 7rem !important;
         max-width: 780px !important;
     }
 
@@ -50,9 +50,7 @@ st.markdown(
         color: #64748B;
     }
 
-    /* XÜSUSİ MESAJ KUTULARI (CUSTOM BUBBLES) */
-    
-    /* User Bubble - Sağa Yönlü, Navy Blue */
+    /* XÜSUSİ MESAJ BUBBLE-LARI */
     .user-bubble-container {
         display: flex;
         justify-content: flex-end;
@@ -70,7 +68,6 @@ st.markdown(
         box-shadow: 0 4px 12px rgba(11, 25, 44, 0.12);
     }
 
-    /* AI Bubble - Sola Yönlü, Zəngin Boz */
     .ai-bubble-container {
         display: flex;
         justify-content: flex-start;
@@ -89,32 +86,53 @@ st.markdown(
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
     }
 
-    /* Input Bar və Popover Kontrolu */
-    div[data-testid="stChatInput"] {
-        border-radius: 35px !important;
+    /* BÜTÖV BİRLEŞDİRİLMİŞ İNPUT BAR (INTEGRATED CHAT BAR) */
+    [data-testid="stHorizontalBlock"] {
         background-color: #FFFFFF !important;
         border: 1.5px solid #CBD5E1 !important;
+        border-radius: 35px !important;
+        padding: 4px 10px !important;
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06) !important;
-        padding: 2px 6px !important;
+        align-items: center !important;
+        display: flex !important;
+        gap: 0px !important;
     }
-    div[data-testid="stChatInput"]:focus-within {
+    [data-testid="stHorizontalBlock"]:focus-within {
         border-color: #0B192C !important;
+        box-shadow: 0 8px 25px rgba(11, 25, 44, 0.12) !important;
     }
 
-    /* Popover (+) Düyməsi */
+    /* Popover (+) Düyməsi - Bütöv Barın Solunda */
     [data-testid="stPopover"] > button {
         border-radius: 50% !important;
-        width: 40px !important;
-        height: 40px !important;
-        background-color: #F1F5F9 !important;
+        width: 36px !important;
+        height: 36px !important;
+        background-color: transparent !important;
         color: #0B192C !important;
         border: none !important;
-        font-size: 18px !important;
+        font-size: 20px !important;
         font-weight: bold !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
     [data-testid="stPopover"] > button:hover {
-        background-color: #0B192C !important;
-        color: #FFFFFF !important;
+        background-color: #F1F5F9 !important;
+        color: #0B192C !important;
+    }
+
+    /* Input Sahəsinin Çərçivəsini Və Kölgəsini Aradan Qaldırmaq */
+    div[data-testid="stChatInput"] {
+        border: none !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+    }
+    div[data-testid="stChatInput"] > div {
+        border: none !important;
+        background: transparent !important;
+        box-shadow: none !important;
     }
 
     /* Standart ChatMessage Elementlərini Tam Gizlət */
@@ -122,6 +140,7 @@ st.markdown(
         display: none !important;
     }
 
+    /* Göndərmə Ox Düyməsi */
     button[aria-label="Send message"] {
         background-color: #0B192C !important;
         color: #FFFFFF !important;
@@ -167,7 +186,7 @@ Sən TikTok, Instagram Reels və YouTube Shorts üzrə ekspert və multimodal so
 if api_key:
   genai.configure(api_key=api_key)
   model = genai.GenerativeModel(
-      model_name="gemini-2.0-flash", system_instruction=SYSTEM_INSTRUCTION
+      model_name="gemini-3.6-flash", system_instruction=SYSTEM_INSTRUCTION
   )
 
   if "messages" not in st.session_state:
@@ -188,8 +207,8 @@ if api_key:
           unsafe_allow_html=True,
       )
 
-  # Əsas İnput Paneli
-  col_plus, col_input = st.columns([1, 8])
+  # Bütöv Birləşdirilmiş Input Paneli
+  col_plus, col_input = st.columns([0.8, 9.2])
 
   uploaded_file = None
   action_type = "Standard"
@@ -252,7 +271,6 @@ if api_key:
 
     display_text = user_input or f"[{action_type} - Media faylı]"
 
-    # User mesajını ekrana çıxar və yaddaşa yaz
     st.session_state.messages.append({"role": "user", "content": display_text})
     st.markdown(
         f'<div class="user-bubble-container"><div'
@@ -260,7 +278,6 @@ if api_key:
         unsafe_allow_html=True,
     )
 
-    # AI Cavabı
     with st.spinner("Cavab hazırlanır..."):
       try:
         response = model.generate_content(content_parts)
