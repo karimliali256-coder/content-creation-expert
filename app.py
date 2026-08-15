@@ -34,10 +34,10 @@ if api_key:
 
   # Canlı Google Search aləti qoşulmuş model
   model = genai.GenerativeModel(
-      "gemini-3.1-flash",
-      system_instruction=SYSTEM_INSTRUCTION,
-      tools=["google_search_retrieval"],
-  )
+    model_name="gemini-1.5-flash",
+    system_instruction=SYSTEM_INSTRUCTION,
+    tools=[{"google_search": {}}],
+)
 
   # Session State (Yaddaş)
   if "messages" not in st.session_state:
