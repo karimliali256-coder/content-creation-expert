@@ -1,8 +1,9 @@
 import os
 import tempfile
+import time
+
 import streamlit as st
-from google import genai
-from google.genai import types
+import google.generativeai as genai
 
 
 # ============================================================
@@ -18,341 +19,506 @@ st.set_page_config(
 
 
 # ============================================================
-# MOBILE UI
+# MOBILE-FIRST CSS
 # ============================================================
 
 def inject_mobile_css():
+
     st.markdown(
         """
-        <style>
-
-        * {
-            box-sizing: border-box;
-        }
-
-        html,
-        body {
-            margin: 0 !important;
-            padding: 0 !important;
-            width: 100% !important;
-            overflow-x: hidden !important;
-            background: #ffffff !important;
-        }
-
-        .stApp {
-            background: #ffffff !important;
-            color: #172033 !important;
-            font-family:
-                Inter,
-                -apple-system,
-                BlinkMacSystemFont,
-                "Segoe UI",
-                Roboto,
-                sans-serif !important;
-        }
-
-        header {
-            display: none !important;
-        }
-
-        footer {
-            display: none !important;
-        }
-
-        #MainMenu {
-            visibility: hidden !important;
-        }
-
-        [data-testid="stAppViewContainer"] {
-            background: #ffffff !important;
-        }
-
-        [data-testid="stMain"] {
-            background: #ffffff !important;
-        }
-
-        /* MAIN */
-
-        .main .block-container {
-            width: 100% !important;
-            max-width: 900px !important;
-            margin: 0 auto !important;
-
-            padding-top: 12px !important;
-            padding-bottom: 105px !important;
-            padding-left: 10px !important;
-            padding-right: 10px !important;
-        }
-
-        /* HEADER */
-
-        .mobile-header {
-            width: 100%;
-            text-align: center;
-            padding: 8px 4px 18px 4px;
-        }
-
-        .mobile-header h1 {
-            margin: 0 !important;
-            color: #0A192F !important;
-            font-size: 26px !important;
-            line-height: 1.15 !important;
-            font-weight: 800 !important;
-            letter-spacing: -0.5px !important;
-        }
-
-        .mobile-header p {
-            margin: 6px 0 0 0 !important;
-            color: #718096 !important;
-            font-size: 13px !important;
-        }
-
-        /* CHAT */
-
-        [data-testid="stChatMessage"] {
-            width: fit-content !important;
-            max-width: 88% !important;
+<style>
 
-            padding: 12px 15px !important;
-            margin-top: 5px !important;
-            margin-bottom: 10px !important;
+/* ============================================================
+   GLOBAL
+   ============================================================ */
 
-            border-radius: 18px !important;
-
-            font-size: 15px !important;
-            line-height: 1.55 !important;
-
-            overflow-wrap: anywhere !important;
-            word-break: break-word !important;
-        }
+* {
+    box-sizing: border-box;
+}
 
-        [data-testid="stChatMessageAvatar"] {
-            display: none !important;
-        }
+html,
+body {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    overflow-x: hidden !important;
+    background: #FFFFFF !important;
+}
 
-        [data-testid="stChatMessageContent"] {
-            width: 100% !important;
-            max-width: 100% !important;
-        }
+.stApp {
+    background: #FFFFFF !important;
+    color: #172033 !important;
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        sans-serif !important;
+}
 
-        [data-testid="stChatMessageContent"] p {
-            margin-top: 0 !important;
-            margin-bottom: 8px !important;
-        }
+[data-testid="stAppViewContainer"] {
+    background: #FFFFFF !important;
+}
 
-        [data-testid="stChatMessageContent"] p:last-child {
-            margin-bottom: 0 !important;
-        }
+[data-testid="stMain"] {
+    background: #FFFFFF !important;
+}
 
-        [data-testid="stChatMessageContent"] pre {
-            max-width: 100% !important;
-            overflow-x: auto !important;
-            border-radius: 10px !important;
-        }
+/* Streamlit header */
+header {
+    display: block !important;
+}
 
-        [data-testid="stChatMessageContent"] img {
-            max-width: 100% !important;
-            height: auto !important;
-            border-radius: 12px !important;
-        }
+footer {
+    display: none !important;
+}
 
-        [data-testid="stChatMessageContent"] table {
-            display: block !important;
-            max-width: 100% !important;
-            overflow-x: auto !important;
-        }
+#MainMenu {
+    display: none !important;
+}
 
-        /* CHAT INPUT */
 
-        [data-testid="stChatInput"] {
-            position: fixed !important;
+/* ============================================================
+   MAIN CONTAINER
+   ============================================================ */
 
-            left: 0 !important;
-            right: 0 !important;
-            bottom: 0 !important;
+.main .block-container {
+    width: 100% !important;
+    max-width: 900px !important;
 
-            width: 100% !important;
+    margin: 0 auto !important;
 
-            z-index: 999999 !important;
+    padding-top: 12px !important;
+    padding-bottom: 115px !important;
 
-            background: rgba(255, 255, 255, 0.97) !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+}
 
-            backdrop-filter: blur(15px) !important;
-            -webkit-backdrop-filter: blur(15px) !important;
 
-            border-top: 1px solid #E7EAF0 !important;
+/* ============================================================
+   HEADER
+   ============================================================ */
 
-            padding:
-                8px
-                10px
-                calc(8px + env(safe-area-inset-bottom))
-                10px !important;
-        }
+.mobile-header {
+    width: 100%;
+    text-align: center;
 
-        [data-testid="stChatInput"] > div {
-            max-width: 900px !important;
-            margin: 0 auto !important;
-        }
+    padding-top: 8px;
+    padding-bottom: 16px;
+}
 
-        [data-testid="stChatInput"] textarea {
-            min-height: 46px !important;
-            max-height: 130px !important;
+.mobile-header h1 {
+    margin: 0 !important;
 
-            border-radius: 24px !important;
+    color: #0A192F !important;
 
-            border: 1px solid #D9DEE7 !important;
+    font-size: 27px !important;
+    line-height: 1.15 !important;
 
-            background: #ffffff !important;
+    font-weight: 800 !important;
 
-            color: #172033 !important;
+    letter-spacing: -0.6px !important;
+}
 
-            font-size: 16px !important;
+.mobile-header p {
+    margin: 7px 0 0 0 !important;
 
-            padding: 12px 48px 12px 16px !important;
+    color: #718096 !important;
 
-            outline: none !important;
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+}
 
-            box-shadow:
-                0 2px 10px rgba(10, 25, 47, 0.05) !important;
-        }
 
-        [data-testid="stChatInput"] textarea:focus {
-            border-color: #1A73E8 !important;
-        }
+/* ============================================================
+   API SETTINGS
+   ============================================================ */
 
-        /* BUTTONS */
+[data-testid="stExpander"] {
+    border: 1px solid #E3E7ED !important;
+    border-radius: 15px !important;
 
-        .stButton > button {
-            min-height: 46px !important;
+    background: #FAFBFC !important;
 
-            border-radius: 13px !important;
+    margin-bottom: 14px !important;
+}
 
-            font-size: 14px !important;
-            font-weight: 600 !important;
+[data-testid="stExpander"] summary {
+    font-weight: 600 !important;
+    color: #172033 !important;
+}
 
-            border: 1px solid #E0E4EA !important;
+[data-testid="stExpander"] input {
+    font-size: 16px !important;
+}
 
-            background: #F7F8FA !important;
-            color: #172033 !important;
-        }
 
-        /* PLUS BUTTON */
+/* ============================================================
+   CHAT MESSAGES
+   ============================================================ */
 
-        [data-testid="stPopover"] > button {
-            width: 48px !important;
-            height: 48px !important;
+[data-testid="stChatMessage"] {
+    width: fit-content !important;
+    max-width: 89% !important;
 
-            min-width: 48px !important;
+    padding: 12px 15px !important;
 
-            padding: 0 !important;
+    margin-top: 5px !important;
+    margin-bottom: 11px !important;
 
-            border-radius: 50% !important;
+    border-radius: 18px !important;
 
-            background: #F1F3F6 !important;
+    font-size: 15px !important;
+    line-height: 1.55 !important;
 
-            border: 1px solid #DDE1E7 !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+}
 
-            color: #0A192F !important;
+[data-testid="stChatMessageAvatar"] {
+    display: none !important;
+}
 
-            font-size: 23px !important;
-        }
+[data-testid="stChatMessageContent"] {
+    width: 100% !important;
+    max-width: 100% !important;
 
-        /* FILE UPLOADER */
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+}
 
-        [data-testid="stFileUploader"] {
-            width: 100% !important;
-        }
+[data-testid="stChatMessageContent"] p {
+    margin-top: 0 !important;
+    margin-bottom: 8px !important;
+}
 
-        [data-testid="stFileUploaderDropzone"] {
-            min-height: 100px !important;
+[data-testid="stChatMessageContent"] p:last-child {
+    margin-bottom: 0 !important;
+}
 
-            border-radius: 14px !important;
 
-            border: 1px dashed #CBD2DC !important;
+/* ============================================================
+   MARKDOWN
+   ============================================================ */
 
-            background: #FAFBFC !important;
-        }
+[data-testid="stChatMessageContent"] h1,
+[data-testid="stChatMessageContent"] h2,
+[data-testid="stChatMessageContent"] h3,
+[data-testid="stChatMessageContent"] h4 {
+    max-width: 100% !important;
+    overflow-wrap: anywhere !important;
+}
 
-        /* ALERTS */
+[data-testid="stChatMessageContent"] pre {
+    width: 100% !important;
+    max-width: 100% !important;
 
-        [data-testid="stAlert"] {
-            border-radius: 14px !important;
-            font-size: 14px !important;
-        }
+    overflow-x: auto !important;
 
-        /* SIDEBAR */
+    border-radius: 11px !important;
+}
 
-        [data-testid="stSidebar"] {
-            background: #ffffff !important;
-        }
+[data-testid="stChatMessageContent"] code {
+    overflow-wrap: anywhere !important;
+}
 
-        [data-testid="stSidebar"] > div:first-child {
-            padding: 20px 16px !important;
-        }
+[data-testid="stChatMessageContent"] table {
+    display: block !important;
 
-        /* MOBILE */
+    max-width: 100% !important;
 
-        @media (max-width: 600px) {
+    overflow-x: auto !important;
 
-            .main .block-container {
-                max-width: 100% !important;
+    white-space: nowrap !important;
+}
 
-                padding-left: 8px !important;
-                padding-right: 8px !important;
+[data-testid="stChatMessageContent"] img {
+    display: block !important;
 
-                padding-top: 8px !important;
-                padding-bottom: 100px !important;
-            }
+    max-width: 100% !important;
+    width: auto !important;
+    height: auto !important;
 
-            .mobile-header {
-                padding-bottom: 12px !important;
-            }
+    border-radius: 13px !important;
+}
 
-            .mobile-header h1 {
-                font-size: 23px !important;
-            }
+[data-testid="stChatMessageContent"] video {
+    max-width: 100% !important;
+    height: auto !important;
 
-            .mobile-header p {
-                font-size: 12px !important;
-            }
+    border-radius: 13px !important;
+}
 
-            [data-testid="stChatMessage"] {
-                max-width: 92% !important;
-                padding: 10px 13px !important;
-                border-radius: 17px !important;
-                font-size: 15px !important;
-            }
 
-            [data-testid="stChatInput"] {
-                padding-left: 7px !important;
-                padding-right: 7px !important;
-            }
+/* ============================================================
+   CHAT INPUT
+   ============================================================ */
 
-            [data-testid="stChatInput"] textarea {
-                font-size: 16px !important;
-            }
-        }
+[data-testid="stChatInput"] {
+    position: fixed !important;
 
-        /* SMALL PHONES */
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
 
-        @media (max-width: 360px) {
+    width: 100% !important;
 
-            .mobile-header h1 {
-                font-size: 21px !important;
-            }
+    z-index: 999999 !important;
 
-            [data-testid="stChatMessage"] {
-                max-width: 94% !important;
-                font-size: 14px !important;
-            }
+    background: rgba(255, 255, 255, 0.97) !important;
 
-            .main .block-container {
-                padding-left: 6px !important;
-                padding-right: 6px !important;
-            }
-        }
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
 
-        </style>
+    border-top: 1px solid #E6E9EE !important;
+
+    padding-top: 8px !important;
+    padding-left: 9px !important;
+    padding-right: 9px !important;
+
+    padding-bottom:
+        calc(8px + env(safe-area-inset-bottom))
+        !important;
+}
+
+[data-testid="stChatInput"] > div {
+    max-width: 900px !important;
+
+    margin: 0 auto !important;
+}
+
+[data-testid="stChatInput"] textarea {
+    min-height: 47px !important;
+    max-height: 130px !important;
+
+    border-radius: 24px !important;
+
+    border: 1px solid #D8DEE7 !important;
+
+    background: #FFFFFF !important;
+
+    color: #172033 !important;
+
+    font-size: 16px !important;
+
+    padding: 12px 48px 12px 17px !important;
+
+    outline: none !important;
+
+    box-shadow:
+        0 2px 12px rgba(10, 25, 47, 0.05) !important;
+}
+
+[data-testid="stChatInput"] textarea:focus {
+    border-color: #1A73E8 !important;
+
+    box-shadow:
+        0 0 0 2px rgba(26, 115, 232, 0.08) !important;
+}
+
+
+/* ============================================================
+   PLUS BUTTON
+   ============================================================ */
+
+[data-testid="stPopover"] {
+    margin-bottom: 8px !important;
+}
+
+[data-testid="stPopover"] > button {
+    min-width: 48px !important;
+
+    width: 48px !important;
+    height: 48px !important;
+
+    padding: 0 !important;
+
+    border-radius: 50% !important;
+
+    background: #F1F3F6 !important;
+
+    border: 1px solid #DDE2E8 !important;
+
+    color: #0A192F !important;
+
+    font-size: 23px !important;
+}
+
+
+/* ============================================================
+   ACTION BUTTONS
+   ============================================================ */
+
+.stButton > button {
+    min-height: 46px !important;
+
+    width: 100% !important;
+
+    border-radius: 13px !important;
+
+    font-size: 14px !important;
+
+    font-weight: 600 !important;
+
+    border: 1px solid #DFE4EA !important;
+
+    background: #F7F8FA !important;
+
+    color: #172033 !important;
+}
+
+.stButton > button:active {
+    transform: scale(0.98) !important;
+}
+
+
+/* ============================================================
+   FILE UPLOADER
+   ============================================================ */
+
+[data-testid="stFileUploader"] {
+    width: 100% !important;
+}
+
+[data-testid="stFileUploaderDropzone"] {
+    min-height: 105px !important;
+
+    border-radius: 14px !important;
+
+    border: 1px dashed #C8D0DB !important;
+
+    background: #FAFBFC !important;
+}
+
+[data-testid="stFileUploaderDropzone"] * {
+    font-size: 13px !important;
+}
+
+
+/* ============================================================
+   ALERTS
+   ============================================================ */
+
+[data-testid="stAlert"] {
+    border-radius: 14px !important;
+
+    font-size: 14px !important;
+
+    line-height: 1.5 !important;
+}
+
+
+/* ============================================================
+   SPINNER
+   ============================================================ */
+
+[data-testid="stSpinner"] {
+    font-size: 14px !important;
+}
+
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+
+@media (max-width: 600px) {
+
+    .main .block-container {
+        width: 100% !important;
+        max-width: 100% !important;
+
+        padding-top: 7px !important;
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+        padding-bottom: 105px !important;
+    }
+
+    .mobile-header {
+        padding-top: 5px !important;
+        padding-bottom: 12px !important;
+    }
+
+    .mobile-header h1 {
+        font-size: 23px !important;
+    }
+
+    .mobile-header p {
+        font-size: 12px !important;
+    }
+
+    [data-testid="stChatMessage"] {
+        max-width: 92% !important;
+
+        padding: 10px 13px !important;
+
+        border-radius: 17px !important;
+
+        font-size: 15px !important;
+    }
+
+    [data-testid="stChatInput"] {
+        padding-left: 7px !important;
+        padding-right: 7px !important;
+    }
+
+    [data-testid="stChatInput"] textarea {
+        font-size: 16px !important;
+    }
+
+}
+
+
+/* ============================================================
+   SMALL PHONES
+   ============================================================ */
+
+@media (max-width: 360px) {
+
+    .mobile-header h1 {
+        font-size: 21px !important;
+    }
+
+    .mobile-header p {
+        font-size: 11px !important;
+    }
+
+    [data-testid="stChatMessage"] {
+        max-width: 94% !important;
+
+        font-size: 14px !important;
+    }
+
+    .main .block-container {
+        padding-left: 6px !important;
+        padding-right: 6px !important;
+    }
+
+}
+
+
+/* ============================================================
+   LANDSCAPE
+   ============================================================ */
+
+@media (
+    max-width: 900px
+) and (
+    orientation: landscape
+) {
+
+    .main .block-container {
+        padding-bottom: 95px !important;
+    }
+
+    .mobile-header {
+        padding-bottom: 7px !important;
+    }
+
+}
+
+</style>
         """,
         unsafe_allow_html=True,
     )
@@ -365,44 +531,54 @@ def inject_mobile_css():
 SYSTEM_INSTRUCTION = """
 You are Viral Creator AI.
 
-You are an expert in TikTok, Instagram Reels and YouTube Shorts.
+You are an expert in:
 
-Your expertise includes:
-
-- viral hooks
+- TikTok
+- Instagram Reels
+- YouTube Shorts
+- viral content
 - retention
+- hooks
 - storytelling
 - audience psychology
-- content strategy
-- trend analysis
 - social media algorithms
+- trend analysis
 - A/B testing
-- short-form video structure
+- short-form video strategy
 
-MODES:
+Your goal is to help the creator make content with strong
+retention and viral potential.
 
-BRAINSTORM:
-Generate 3 strong viral video concepts.
+BRAINSTORM MODE:
 
-For every concept provide:
+Generate 3 strong video concepts.
+
+For every concept include:
+
 1. Hook
 2. Core idea
 3. Retention mechanism
-4. Ending
-5. CTA
+4. Visual direction
+5. Ending
+6. CTA
 
-DEEP RESEARCH:
-Analyze the subject from:
+DEEP RESEARCH MODE:
+
+Analyze the topic deeply from:
+
 - algorithmic perspective
 - psychological perspective
 - visual perspective
 - retention perspective
 - audience perspective
+- current trend perspective
 
-Use Google Search when current information is required.
+Use Google Search when current information is needed.
 
-A/B TEST:
+A/B TEST MODE:
+
 Create:
+
 - Hook A
 - Hook B
 - Title A
@@ -412,15 +588,23 @@ Create:
 
 Then explain which version is stronger and why.
 
-Always prioritize:
+IMPORTANT:
+
+Avoid generic motivational clichés.
+
+Prioritize:
+
 - curiosity
 - emotional tension
 - specificity
 - strong hooks
 - retention
 - practical value
+- shareability
+- comments
+- saves
 
-Avoid generic motivational clichés.
+Give actionable answers.
 """
 
 
@@ -445,37 +629,33 @@ inject_mobile_css()
 
 st.markdown(
     """
-    <div class="mobile-header">
-        <h1>🚀 Viral Creator AI</h1>
-        <p>TikTok • Reels • Shorts üçün AI Content Agent</p>
-    </div>
-    """,
+<div class="mobile-header">
+    <h1>🚀 Viral Creator AI</h1>
+    <p>TikTok • Reels • Shorts üçün AI Content Agent</p>
+</div>
+""",
     unsafe_allow_html=True,
 )
 
 
 # ============================================================
-# SIDEBAR
+# API SETTINGS
 # ============================================================
 
-with st.sidebar:
-
-    st.title("⚙️ Settings")
-
-    st.write(
-        "Gemini API Key daxil et."
-    )
+with st.expander(
+    "⚙️ Gemini API Settings",
+    expanded=False,
+):
 
     api_key = st.text_input(
         "Google Gemini API Key",
         type="password",
         placeholder="AIza...",
+        help="Google AI Studio API Key daxil et.",
     )
 
-    st.divider()
-
     st.caption(
-        "API Key bu Streamlit sessiyasında istifadə olunur."
+        "API Key bu sessiyada istifadə olunur."
     )
 
 
@@ -486,41 +666,43 @@ with st.sidebar:
 if not api_key:
 
     st.info(
-        "🚀 Başlamaq üçün sol/yuxarı menyudan Gemini API Key əlavə et."
+        "🚀 Başlamaq üçün yuxarıdakı "
+        "Gemini API Settings bölməsinə API Key əlavə et."
     )
 
     st.markdown(
         """
-        <div style="
-            margin-top:25px;
-            padding:22px;
-            border-radius:18px;
-            background:#F7F8FA;
-            text-align:center;
-        ">
+<div style="
+    margin-top:22px;
+    padding:22px;
+    border-radius:18px;
+    background:#F7F8FA;
+    text-align:center;
+">
 
-            <div style="font-size:40px;">🎯</div>
+    <div style="font-size:40px;">🎯</div>
 
-            <h3 style="
-                margin:8px 0;
-                color:#0A192F;
-            ">
-                Viral Creator AI
-            </h3>
+    <h3 style="
+        margin:8px 0;
+        color:#0A192F;
+        font-size:20px;
+    ">
+        Viral Creator AI
+    </h3>
 
-            <p style="
-                color:#64748B;
-                font-size:14px;
-                margin:0;
-                line-height:1.5;
-            ">
-                Viral ideyalar yarat.
-                Videoları analiz et.
-                Hook və CTA-ları test et.
-            </p>
+    <p style="
+        color:#64748B;
+        font-size:14px;
+        margin:0;
+        line-height:1.6;
+    ">
+        Viral ideyalar yarat.<br>
+        Videoları analiz et.<br>
+        Hook və CTA-ları test et.
+    </p>
 
-        </div>
-        """,
+</div>
+""",
         unsafe_allow_html=True,
     )
 
@@ -528,19 +710,27 @@ if not api_key:
 
 
 # ============================================================
-# GEMINI CLIENT
+# GEMINI CONFIGURATION
 # ============================================================
 
 try:
 
-    client = genai.Client(
+    genai.configure(
         api_key=api_key
+    )
+
+    model = genai.GenerativeModel(
+        model_name="gemini-3.6-flash",
+        system_instruction=SYSTEM_INSTRUCTION,
+        tools=[
+            "google_search_retrieval"
+        ],
     )
 
 except Exception as e:
 
     st.error(
-        f"Gemini bağlantı xətası: {e}"
+        f"Gemini konfiqurasiya xətası: {e}"
     )
 
     st.stop()
@@ -574,6 +764,10 @@ with st.popover("➕"):
         "### 🧠 Ağıllı Rejimlər"
     )
 
+    st.caption(
+        "Agentə nə etmək istədiyini seç."
+    )
+
     if st.button(
         "💡 Brainstorm",
         use_container_width=True,
@@ -591,8 +785,8 @@ with st.popover("➕"):
 
         action_prompt = (
             "Aşağıdakı mövzunu dərin araşdır. "
-            "Alqoritmik, psixoloji, vizual və "
-            "retention baxımından analiz et:"
+            "Alqoritmik, psixoloji, vizual, "
+            "retention və trend baxımından analiz et:"
         )
 
     if st.button(
@@ -602,13 +796,14 @@ with st.popover("➕"):
 
         action_prompt = (
             "Bu mövzu üçün A/B test hazırla. "
-            "2 Hook, 2 Title və 2 CTA yarat:"
+            "2 Hook, 2 Title və 2 CTA yarat. "
+            "Sonra hansının daha güclü olduğunu izah et:"
         )
 
     st.divider()
 
     uploaded_file = st.file_uploader(
-        "📎 Media yüklə",
+        "📎 Şəkil və ya video yüklə",
         type=[
             "jpg",
             "jpeg",
@@ -618,7 +813,6 @@ with st.popover("➕"):
             "mov",
             "webm",
         ],
-        label_visibility="visible",
     )
 
 
@@ -632,7 +826,7 @@ user_input = st.chat_input(
 
 
 # ============================================================
-# DETERMINE INPUT
+# FINAL INPUT
 # ============================================================
 
 final_input = user_input
@@ -642,48 +836,63 @@ if action_prompt and not user_input:
     final_input = action_prompt
 
 
+# ============================================================
+# NOTHING TO DO
+# ============================================================
+
 if not final_input and not uploaded_file:
 
     st.stop()
 
 
 # ============================================================
-# CONTENT PARTS
+# CONTENT
 # ============================================================
 
 content_parts = []
 
 
 # ============================================================
-# FILE UPLOAD
+# MEDIA UPLOAD
 # ============================================================
 
 if uploaded_file:
 
     try:
 
-        suffix = os.path.splitext(
+        file_extension = os.path.splitext(
             uploaded_file.name
         )[1]
 
         with tempfile.NamedTemporaryFile(
             delete=False,
-            suffix=suffix,
-        ) as tmp:
+            suffix=file_extension,
+        ) as temp_file:
 
-            tmp.write(
+            temp_file.write(
                 uploaded_file.getvalue()
             )
 
-            tmp_path = tmp.name
+            temp_path = temp_file.name
 
         with st.spinner(
             "📎 Media emal olunur..."
         ):
 
-            media_file = client.files.upload(
-                file=tmp_path
+            media_file = genai.upload_file(
+                temp_path
             )
+
+            while (
+                media_file.state.name
+                == "PROCESSING"
+            ):
+
+                time.sleep(1)
+
+                media_file = genai.get_file(
+                    media_file.name
+                )
 
         content_parts.append(
             media_file
@@ -692,7 +901,7 @@ if uploaded_file:
     except Exception as e:
 
         st.error(
-            f"Media yükləmə xətası: {e}"
+            f"Media yüklənərkən xəta: {e}"
         )
 
         st.stop()
@@ -743,22 +952,8 @@ with st.chat_message("assistant"):
 
         try:
 
-            response = client.models.generate_content(
-
-                model="gemini-3.6-flash",
-
-                contents=content_parts,
-
-                config=types.GenerateContentConfig(
-
-                    system_instruction=SYSTEM_INSTRUCTION,
-
-                    tools=[
-                        types.Tool(
-                            google_search=types.GoogleSearch()
-                        )
-                    ],
-                ),
+            response = model.generate_content(
+                content_parts
             )
 
             answer = response.text
