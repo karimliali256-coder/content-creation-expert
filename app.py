@@ -1,9 +1,10 @@
+import io
 import tempfile
 import time
 import google.generativeai as genai
 import streamlit as st
 
-# Streamlit Səhifə Konfiqurasiyası
+# Səhifə Tənzimləmələri
 st.set_page_config(
     page_title="Viral Creator AI Agent",
     page_icon="🚀",
@@ -11,21 +12,21 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# Custom CSS: Modern Navy Blue & Ağ Dizayn, Kavisli Çat və Motion
+# Custom CSS: Dərin Navy Blue, Zəngin Boz və Saf Ağ
 st.markdown(
     """
     <style>
-    /* Bütün səhifə üçün fon və şrift ayarları */
+    /* Ümumi Arxa Fon və Şrift */
     .stApp {
         background-color: #F8FAFC;
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
-    
-    /* Yüngül Giriş Animasiyası (Motion) */
-    @keyframes slideInUp {
+
+    /* Animasiyalar */
+    @keyframes fadeInUp {
         from {
             opacity: 0;
-            transform: translateY(15px);
+            transform: translateY(12px);
         }
         to {
             opacity: 1;
@@ -33,147 +34,195 @@ st.markdown(
         }
     }
 
-    @keyframes rotatePlus {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(90deg); }
-    }
-
-    /* Başlıq sahəsi */
+    /* Başlıq İnterfeysi */
     .main-header {
         text-align: center;
         padding: 20px 0 10px 0;
-        animation: slideInUp 0.4s ease-out;
+        animation: fadeInUp 0.4s ease-out;
     }
     .main-header h1 {
-        color: #0A192F;
+        color: #0B192C;
         font-size: 2.2rem;
-        font-weight: 700;
-        margin-bottom: 5px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        margin-bottom: 4px;
     }
     .main-header p {
-        color: #4A5568;
+        color: #64748B;
         font-size: 0.95rem;
+        font-weight: 500;
     }
 
-    /* Çat Mesaj Qutuları - Kavisli və Animasiyalı */
+    /* Çat Mesaj Qutuları */
     [data-testid="stChatMessage"] {
-        background-color: #FFFFFF !important;
-        border: 1px solid #E2E8F0 !important;
-        border-radius: 20px !important;
-        padding: 16px 20px !important;
-        margin-bottom: 12px !important;
-        box-shadow: 0 4px 12px rgba(10, 25, 47, 0.03) !important;
-        animation: slideInUp 0.3s ease-out !important;
+        border-radius: 24px !important;
+        padding: 16px 22px !important;
+        margin-bottom: 14px !important;
+        animation: fadeInUp 0.3s ease-out !important;
     }
 
-    /* İstifadəçi Mesajı Style - Navy Blue Vurğusu */
-    [data-testid="stChatMessage"]:has([data-testid="stChatMessageContent"]:contains("user")) {
-        background-color: #0A192F !important;
+    /* AI Chatbot Mesajı - Zəngin Premium Boz */
+    [data-testid="stChatMessage"]:has([data-testid="stChatMessageContent"]:contains("assistant")),
+    div[data-testid="stChatMessage"]:nth-child(even) {
+        background-color: #E2E8F0 !important;
+        color: #0F172A !important;
+        border: 1px solid #CBD5E1 !important;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03) !important;
+    }
+
+    /* İstifadəçi Mesajı - Dərin Navy Blue */
+    [data-testid="stChatMessage"]:has([data-testid="stChatMessageContent"]:contains("user")),
+    div[data-testid="stChatMessage"]:nth-child(odd) {
+        background-color: #0B192C !important;
         color: #FFFFFF !important;
         border: none !important;
+        box-shadow: 0 6px 18px rgba(11, 25, 44, 0.18) !important;
     }
 
-    /* Pop-over Fayl Yükləmə Düyməsi (+) Style */
+    /* Oval Floating Chat Input Qutusu */
+    div[data-testid="stChatInput"] {
+        border-radius: 40px !important;
+        background-color: #FFFFFF !important;
+        border: 1.5px solid #CBD5E1 !important;
+        box-shadow: 0 10px 30px rgba(11, 25, 44, 0.08) !important;
+        padding: 4px 8px !important;
+    }
+    div[data-testid="stChatInput"]:focus-within {
+        border-color: #0B192C !important;
+    }
+
+    /* Popover (+) Düyməsi Style */
     [data-testid="stPopover"] > button {
         border-radius: 50% !important;
-        width: 46px !important;
-        height: 46px !important;
-        background-color: #0A192F !important;
-        color: #FFFFFF !important;
-        border: none !important;
-        font-size: 22px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        transition: all 0.3s ease !important;
-        box-shadow: 0 4px 10px rgba(10, 25, 47, 0.15) !important;
+        width: 42px !important;
+        height: 42px !important;
+        background-color: #F1F5F9 !important;
+        color: #0B192C !important;
+        border: 1px solid #CBD5E1 !important;
+        font-size: 20px !important;
+        font-weight: bold !important;
+        transition: all 0.2s ease !important;
     }
     [data-testid="stPopover"] > button:hover {
-        background-color: #1E293B !important;
+        background-color: #0B192C !important;
+        color: #FFFFFF !important;
         transform: scale(1.05);
     }
-    
-    /* Şəkillərin kavisli göstərilməsi */
-    img {
-        border-radius: 14px !important;
+
+    /* Göndərmə Düyməsi - Navy Blue */
+    button[aria-label="Send message"] {
+        background-color: #0B192C !important;
+        color: #FFFFFF !important;
+        border-radius: 50% !important;
     }
 
-    /* Səhifə alt hissəsi təmizliyi */
+    /* Media və Yükləmə Elementləri */
+    img, video {
+        border-radius: 16px !important;
+    }
     footer {visibility: hidden;}
     </style>
 """,
     unsafe_allow_html=True,
 )
 
-# İnterfeys Başlığı
+# Başlıq
 st.markdown(
     """
     <div class="main-header">
-        <h1>🚀 Viral Creator AI</h1>
-        <p>TikTok, Reels və Shorts üçün Modern Kontent Asistenti</p>
+        <h1>🚀 Viral Creator AI Agent</h1>
+        <p>TikTok, Reels və Shorts üçün Multimodal Kontent Köməkçisi</p>
     </div>
 """,
     unsafe_allow_html=True,
 )
 
-# Sol panel: API Key Girişi
+# Sol Panel: API, Platforma Seçimi və Yükləmə
 with st.sidebar:
   st.title("⚙️ Tənzimləmələr")
   api_key = st.text_input("Google AI Studio API Key:", type="password")
 
+  st.markdown("---")
+  st.markdown("**🎯 Platforma Adaptasiyası:**")
+  platform = st.selectbox(
+      "Platforma seçin:", ["General", "TikTok", "Instagram Reels", "YouTube Shorts"]
+  )
+
 SYSTEM_INSTRUCTION = """
 Sən TikTok, Instagram Reels və YouTube Shorts alqoritmləri üzrə baş ekspert, canlı trend analitiki və multimodal sosial media köməkçisisən.
 
-MÜHÜM QAYDALAR:
-1. NORMAL DİALOQ: Kontent ideyaları, ssenarilər, montaj və hook təklifləri ver.
-2. VİRAL FAİZİ: YALNIZ istifadəçi xüsusi olaraq viral ehtimalını/qiymətləndirməsini soruşduqda (məsələn: "Viral ehtimalı neçədir?") cavabın İLK SƏTİRİNDƏ mütləq "📊 VIRAL EHTİMAL: [X]%" formatında göstərici ver (0-100% arası).
-3. DESCRIPTION & HASHTAGS: Əgər istifadəçi "Description yaz", "Təsvir ver" və ya "SEO tərtib et" desə, aşağıdakı strukturda hazır mətn çıxar:
-   - 📌 **Description:** (İlk 2 saniyədə maraq oyadan, keyword-lərlə zəngin 2-3 cümləlik mətn)
-   - 🏷️ **Hashtag-lər:** (3 ədəd geniş kütlə üçün + 3 ədəd spesifik nisa uyğun hashtag)
-   - 💬 **Call to Action (CTA):** (Rəy yazmağa və ya paylaşmağa təşviq edən sual)
-4. DEEP RESEARCH (DƏRİN ANALİZ): Əgər istifadəçi "Dərin analiz et" və ya "Research et" desə, mövzunu və ya media faylını alqoritmik, psixoloji və vizual baxımdan detallı kəşf et.
+İŞ REJİMLƏRİ VƏ QAYDALAR:
+1. PLATFORMA ADAPTASİYASI: Verilən cavabları seçilmiş platformaya (TikTok, Reels və ya Shorts) xüsusi alqoritmik qaydalara uyğunlaşdır.
+2. DƏRİN RESEARCH REJİMİ: Mövzunu və ya media faylını alqoritmik (retention rate), psixoloji təsir (viewer trigger) və kadr ritmi baxımından dərindən araşdır.
+3. BRAINSTORM REJİMİ: Təqdim olunan mövzu üçün 5 fərqli viral konsept və fərqli bucaqlardan ideyalar təklif et.
+4. A/B TEST İDEYA GENERATORU: Eyni kontent üçün 3 fərqli vizual hook və 3 fərqli başlanğıc cümləsi yaradaraq A/B test variantları təqdim et.
+5. VIRAL FAİZİ: Əgər istifadəçi viral ehtimalını soruşarsa, cavabın İLK SƏTİRİNDƏ "📊 VIRAL EHTİMAL: [X]%" formatında göstər.
+6. SEO & HASHTAGS: "Təsvir yaz" dedikdə 📌 Description, 🏷️ Hashtags (3 broad + 3 niche), 💬 Call to Action (CTA) çıxar.
 """
 
 if api_key:
   genai.configure(api_key=api_key)
 
-  # Ən son güncəl Gemini modeli
+  # Gemini 2.0 Flash Modeli
   model = genai.GenerativeModel(
-      model_name="gemini-3.6-flash",
+      model_name="gemini-2.0-flash",
       system_instruction=SYSTEM_INSTRUCTION,
-      tools=["google_search_retrieval"]  # Canlı web research imkanı əlavə edir
   )
 
-  # Sesiyaların yadda saxlanması
   if "messages" not in st.session_state:
     st.session_state.messages = []
 
-  # Keçmiş mesajların ekranda göstərilməsi
+  # Keçmiş Mesajların Göstərilməsi
   for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
       st.markdown(msg["content"])
 
-  # İnput Sahəsi: Modern Layout (+ fayl yükləmə və mətn girişi)
-  col1, col2 = st.columns([1, 7])
+  # İnput Zonası: Popover (+) + Chat Input
+  col_plus, col_input = st.columns([1, 8])
 
-  with col1:
-    with st.popover("➕", help="Şəkil və ya Video əlavə et"):
+  uploaded_file = None
+  action_type = "Standard"
+
+  with col_plus:
+    with st.popover("➕", help="Aətlər və Media"):
+      st.markdown("**🛠️ Alətlər və Rejimlər:**")
+      action_type = st.radio(
+          "İş rejimini seçin:",
+          [
+              "Standard",
+              "🔍 Dərin Research",
+              "💡 Brainstorm",
+              "🧪 A/B Test Generator",
+          ],
+          label_visibility="collapsed",
+      )
+
+      st.markdown("---")
+      st.markdown("**📎 Media Yüklə:**")
       uploaded_file = st.file_uploader(
-          "Media seçin:",
+          "Fayl seçin:",
           type=["jpg", "jpeg", "png", "mp4", "mov"],
           label_visibility="collapsed",
       )
 
-  with col2:
-    user_input = st.chat_input("Fikir yazın və ya 'Dərin analiz et' deyin...")
+  with col_input:
+    user_input = st.chat_input("Mesaj yazın...")
 
-  # Media yükləndikdə kiçik xəbərdarlıq qutusu
   if uploaded_file:
-    st.toast(f"📎 Fayl seçildi: {uploaded_file.name}", icon="✅")
+    st.toast(f"📎 Fayl əlavə edildi: {uploaded_file.name}", icon="✅")
 
-  # Göndərmə prosesi
+  # Göndərmə Prosesi
   if user_input or uploaded_file:
     content_parts = []
+
+    # Rejim və Platforma prefiksi
+    prefix_prompt = f"[PLATFORMA: {platform}] "
+    if action_type == "🔍 Dərin Research":
+      prefix_prompt += "[REJİM: DƏRİN RESEARCH] Mövzunu və ya media faylını alqoritmik və psixoloji baxımdan dərindən analiz et: "
+    elif action_type == "💡 Brainstorm":
+      prefix_prompt += "[REJİM: BRAINSTORM] Bu mövzu üçün 5 müxtəlif viral konsept və bucaqlar təklif et: "
+    elif action_type == "🧪 A/B Test Generator":
+      prefix_prompt += "[REJİM: A/B TEST GENERATORU] Bu kontent üçün 3 fərqli vizual hook və 3 fərqli başlanğıc cümləsi ilə A/B test variantları hazırla: "
 
     if uploaded_file:
       with tempfile.NamedTemporaryFile(
@@ -191,15 +240,13 @@ if api_key:
       content_parts.append(media_file)
 
     if user_input:
-      content_parts.append(user_input)
+      content_parts.append(prefix_prompt + user_input)
 
-    # İstifadəçi mesajını yaddaşa yazmaq və göstərmək
-    display_text = user_input or "[Media faylı gönderildi]"
+    display_text = user_input or f"[{action_type} - Media analiz edilir]"
     st.session_state.messages.append({"role": "user", "content": display_text})
     with st.chat_message("user"):
       st.markdown(display_text)
 
-    # AI Cavabının hazırlanması
     with st.chat_message("assistant"):
       with st.spinner("Viral Agent cavab hazırlayır..."):
         try:
@@ -209,6 +256,27 @@ if api_key:
               {"role": "assistant", "content": response.text}
           )
         except Exception as e:
-          st.error(f"Xəta baş verdi: {e}")
+          if "429" in str(e):
+            st.error(
+                "⚠️ API limiti aşıldı! 1 dəqiqə gözləyin və ya sol paneldən yeni"
+                " API Key daxil edin."
+            )
+          else:
+            st.error(f"Xəta baş verdi: {e}")
+
+  # TXT İxracı (Söhbət Yaddaşını Yükləmə Düyməsi)
+  if st.session_state.messages:
+    st.markdown("---")
+    chat_export_text = ""
+    for m in st.session_state.messages:
+      role = "İstifadəçi" if m["role"] == "user" else "Viral AI Agent"
+      chat_export_text += f"{role}:\n{m['content']}\n\n" + "-" * 40 + "\n\n"
+
+    st.download_button(
+        label="📥 Söhbəti TXT Faylı Kimi Yüklə",
+        data=chat_export_text,
+        file_name="viral_agent_analysis.txt",
+        mime="text/plain",
+    )
 else:
   st.warning("Zəhmət olmasa sol paneldən API Key daxil edin.")
