@@ -19,7 +19,7 @@ st.set_page_config(
 
 
 # ============================================================
-# MOBILE-FIRST CSS
+# MOBILE CSS
 # ============================================================
 
 def inject_mobile_css():
@@ -42,7 +42,6 @@ body {
     padding: 0 !important;
     width: 100% !important;
     overflow-x: hidden !important;
-    background: #FFFFFF !important;
 }
 
 .stApp {
@@ -65,16 +64,21 @@ body {
     background: #FFFFFF !important;
 }
 
-/* Streamlit header */
+/* Streamlit üst toolbar */
+
 header {
     display: block !important;
 }
 
-footer {
+[data-testid="stToolbar"] {
     display: none !important;
 }
 
 #MainMenu {
+    display: none !important;
+}
+
+footer {
     display: none !important;
 }
 
@@ -89,11 +93,12 @@ footer {
 
     margin: 0 auto !important;
 
-    padding-top: 12px !important;
-    padding-bottom: 115px !important;
+    padding-top: 10px !important;
+    padding-left: 9px !important;
+    padding-right: 9px !important;
 
-    padding-left: 10px !important;
-    padding-right: 10px !important;
+    /* Chat input üçün aşağıda yer */
+    padding-bottom: 95px !important;
 }
 
 
@@ -106,7 +111,7 @@ footer {
     text-align: center;
 
     padding-top: 8px;
-    padding-bottom: 16px;
+    padding-bottom: 15px;
 }
 
 .mobile-header h1 {
@@ -119,7 +124,7 @@ footer {
 
     font-weight: 800 !important;
 
-    letter-spacing: -0.6px !important;
+    letter-spacing: -0.7px !important;
 }
 
 .mobile-header p {
@@ -137,17 +142,23 @@ footer {
    ============================================================ */
 
 [data-testid="stExpander"] {
-    border: 1px solid #E3E7ED !important;
-    border-radius: 15px !important;
+    border: 1px solid #E1E5EA !important;
 
-    background: #FAFBFC !important;
+    border-radius: 16px !important;
+
+    background: #FFFFFF !important;
 
     margin-bottom: 14px !important;
+
+    box-shadow: 0 1px 4px rgba(10,25,47,0.03) !important;
 }
 
 [data-testid="stExpander"] summary {
-    font-weight: 600 !important;
     color: #172033 !important;
+
+    font-size: 15px !important;
+
+    font-weight: 600 !important;
 }
 
 [data-testid="stExpander"] input {
@@ -156,24 +167,39 @@ footer {
 
 
 /* ============================================================
+   INFO / WARNING
+   ============================================================ */
+
+[data-testid="stAlert"] {
+    border-radius: 14px !important;
+
+    font-size: 14px !important;
+
+    line-height: 1.5 !important;
+}
+
+
+/* ============================================================
    CHAT MESSAGES
    ============================================================ */
 
 [data-testid="stChatMessage"] {
-    width: fit-content !important;
-    max-width: 89% !important;
 
-    padding: 12px 15px !important;
+    max-width: 90% !important;
+
+    padding: 11px 14px !important;
 
     margin-top: 5px !important;
-    margin-bottom: 11px !important;
+    margin-bottom: 10px !important;
 
     border-radius: 18px !important;
 
     font-size: 15px !important;
+
     line-height: 1.55 !important;
 
     overflow-wrap: anywhere !important;
+
     word-break: break-word !important;
 }
 
@@ -200,28 +226,31 @@ footer {
 
 
 /* ============================================================
-   MARKDOWN
+   CHAT CONTENT
    ============================================================ */
 
-[data-testid="stChatMessageContent"] h1,
-[data-testid="stChatMessageContent"] h2,
-[data-testid="stChatMessageContent"] h3,
-[data-testid="stChatMessageContent"] h4 {
+[data-testid="stChatMessageContent"] img {
     max-width: 100% !important;
-    overflow-wrap: anywhere !important;
+
+    height: auto !important;
+
+    border-radius: 13px !important;
+}
+
+[data-testid="stChatMessageContent"] video {
+    max-width: 100% !important;
+
+    height: auto !important;
+
+    border-radius: 13px !important;
 }
 
 [data-testid="stChatMessageContent"] pre {
-    width: 100% !important;
     max-width: 100% !important;
 
     overflow-x: auto !important;
 
     border-radius: 11px !important;
-}
-
-[data-testid="stChatMessageContent"] code {
-    overflow-wrap: anywhere !important;
 }
 
 [data-testid="stChatMessageContent"] table {
@@ -234,88 +263,75 @@ footer {
     white-space: nowrap !important;
 }
 
-[data-testid="stChatMessageContent"] img {
-    display: block !important;
-
-    max-width: 100% !important;
-    width: auto !important;
-    height: auto !important;
-
-    border-radius: 13px !important;
-}
-
-[data-testid="stChatMessageContent"] video {
-    max-width: 100% !important;
-    height: auto !important;
-
-    border-radius: 13px !important;
-}
-
 
 /* ============================================================
    CHAT INPUT
+   IMPORTANT:
+   NO position: fixed
+   NO dark background
    ============================================================ */
 
 [data-testid="stChatInput"] {
-    position: fixed !important;
-
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
 
     width: 100% !important;
 
-    z-index: 999999 !important;
+    background: transparent !important;
 
-    background: rgba(255, 255, 255, 0.97) !important;
+    border: none !important;
 
-    backdrop-filter: blur(16px) !important;
-    -webkit-backdrop-filter: blur(16px) !important;
+    box-shadow: none !important;
 
-    border-top: 1px solid #E6E9EE !important;
-
-    padding-top: 8px !important;
-    padding-left: 9px !important;
-    padding-right: 9px !important;
-
-    padding-bottom:
-        calc(8px + env(safe-area-inset-bottom))
-        !important;
+    padding: 6px 0 8px 0 !important;
 }
 
 [data-testid="stChatInput"] > div {
+
+    width: 100% !important;
+
     max-width: 900px !important;
 
     margin: 0 auto !important;
+
+    background: transparent !important;
 }
 
+
+/* Textarea */
+
 [data-testid="stChatInput"] textarea {
-    min-height: 47px !important;
+
+    min-height: 48px !important;
+
     max-height: 130px !important;
 
-    border-radius: 24px !important;
-
-    border: 1px solid #D8DEE7 !important;
+    width: 100% !important;
 
     background: #FFFFFF !important;
 
     color: #172033 !important;
 
+    border: 1px solid #D7DDE5 !important;
+
+    border-radius: 25px !important;
+
     font-size: 16px !important;
 
+    line-height: 1.4 !important;
+
     padding: 12px 48px 12px 17px !important;
+
+    box-shadow:
+        0 2px 12px rgba(10,25,47,0.06) !important;
+}
+
+[data-testid="stChatInput"] textarea:focus {
+
+    border-color: #1A73E8 !important;
 
     outline: none !important;
 
     box-shadow:
-        0 2px 12px rgba(10, 25, 47, 0.05) !important;
-}
-
-[data-testid="stChatInput"] textarea:focus {
-    border-color: #1A73E8 !important;
-
-    box-shadow:
-        0 0 0 2px rgba(26, 115, 232, 0.08) !important;
+        0 0 0 2px rgba(26,115,232,0.08) !important;
 }
 
 
@@ -328,33 +344,66 @@ footer {
 }
 
 [data-testid="stPopover"] > button {
-    min-width: 48px !important;
 
     width: 48px !important;
+
+    min-width: 48px !important;
+
     height: 48px !important;
 
     padding: 0 !important;
 
-    border-radius: 50% !important;
+    border-radius: 14px !important;
 
     background: #F1F3F6 !important;
 
-    border: 1px solid #DDE2E8 !important;
+    border: 1px solid #E0E4EA !important;
 
     color: #0A192F !important;
 
-    font-size: 23px !important;
+    font-size: 24px !important;
 }
 
 
 /* ============================================================
-   ACTION BUTTONS
+   POPOVER - MOBILE FIX
+   ============================================================ */
+
+[data-testid="stPopoverBody"] {
+
+    width: min(92vw, 390px) !important;
+
+    max-width: min(92vw, 390px) !important;
+
+    min-width: 0 !important;
+
+    border-radius: 18px !important;
+
+    overflow-x: hidden !important;
+
+    padding: 18px !important;
+}
+
+
+/* Popover contents */
+
+[data-testid="stPopoverBody"] [data-testid="stVerticalBlock"] {
+
+    width: 100% !important;
+
+    max-width: 100% !important;
+}
+
+
+/* ============================================================
+   BUTTONS
    ============================================================ */
 
 .stButton > button {
-    min-height: 46px !important;
 
     width: 100% !important;
+
+    min-height: 46px !important;
 
     border-radius: 13px !important;
 
@@ -362,7 +411,7 @@ footer {
 
     font-weight: 600 !important;
 
-    border: 1px solid #DFE4EA !important;
+    border: 1px solid #DDE2E8 !important;
 
     background: #F7F8FA !important;
 
@@ -383,7 +432,10 @@ footer {
 }
 
 [data-testid="stFileUploaderDropzone"] {
-    min-height: 105px !important;
+
+    width: 100% !important;
+
+    min-height: 100px !important;
 
     border-radius: 14px !important;
 
@@ -398,80 +450,75 @@ footer {
 
 
 /* ============================================================
-   ALERTS
-   ============================================================ */
-
-[data-testid="stAlert"] {
-    border-radius: 14px !important;
-
-    font-size: 14px !important;
-
-    line-height: 1.5 !important;
-}
-
-
-/* ============================================================
-   SPINNER
-   ============================================================ */
-
-[data-testid="stSpinner"] {
-    font-size: 14px !important;
-}
-
-
-/* ============================================================
    MOBILE
    ============================================================ */
 
 @media (max-width: 600px) {
 
     .main .block-container {
+
         width: 100% !important;
+
         max-width: 100% !important;
 
         padding-top: 7px !important;
+
         padding-left: 8px !important;
+
         padding-right: 8px !important;
-        padding-bottom: 105px !important;
+
+        padding-bottom: 85px !important;
     }
 
     .mobile-header {
+
         padding-top: 5px !important;
+
         padding-bottom: 12px !important;
     }
 
     .mobile-header h1 {
+
         font-size: 23px !important;
     }
 
     .mobile-header p {
+
         font-size: 12px !important;
     }
 
     [data-testid="stChatMessage"] {
-        max-width: 92% !important;
+
+        max-width: 93% !important;
 
         padding: 10px 13px !important;
 
-        border-radius: 17px !important;
-
         font-size: 15px !important;
+
+        border-radius: 17px !important;
+    }
+
+    [data-testid="stPopoverBody"] {
+
+        width: 92vw !important;
+
+        max-width: 92vw !important;
+
+        padding: 16px !important;
     }
 
     [data-testid="stChatInput"] {
-        padding-left: 7px !important;
-        padding-right: 7px !important;
-    }
 
-    [data-testid="stChatInput"] textarea {
-        font-size: 16px !important;
+        padding-left: 0 !important;
+
+        padding-right: 0 !important;
     }
 
 }
 
 
 /* ============================================================
-   SMALL PHONES
+   VERY SMALL PHONES
    ============================================================ */
 
 @media (max-width: 360px) {
@@ -485,37 +532,34 @@ footer {
     }
 
     [data-testid="stChatMessage"] {
-        max-width: 94% !important;
+
+        max-width: 95% !important;
 
         font-size: 14px !important;
     }
 
-    .main .block-container {
-        padding-left: 6px !important;
-        padding-right: 6px !important;
-    }
+    [data-testid="stPopoverBody"] {
 
+        width: 94vw !important;
+
+        max-width: 94vw !important;
+    }
 }
 
 
 /* ============================================================
-   LANDSCAPE
+   SAFE AREA
    ============================================================ */
 
-@media (
-    max-width: 900px
-) and (
-    orientation: landscape
-) {
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
 
-    .main .block-container {
-        padding-bottom: 95px !important;
+    [data-testid="stChatInput"] {
+
+        padding-bottom:
+            calc(
+                8px + env(safe-area-inset-bottom)
+            ) !important;
     }
-
-    .mobile-header {
-        padding-bottom: 7px !important;
-    }
-
 }
 
 </style>
@@ -531,23 +575,14 @@ footer {
 SYSTEM_INSTRUCTION = """
 You are Viral Creator AI.
 
-You are an expert in:
+You are an expert in TikTok, Instagram Reels,
+YouTube Shorts, viral content, retention,
+hooks, storytelling, audience psychology,
+social media algorithms, trend analysis,
+A/B testing and short-form video strategy.
 
-- TikTok
-- Instagram Reels
-- YouTube Shorts
-- viral content
-- retention
-- hooks
-- storytelling
-- audience psychology
-- social media algorithms
-- trend analysis
-- A/B testing
-- short-form video strategy
-
-Your goal is to help the creator make content with strong
-retention and viral potential.
+Your goal is to help creators make content
+with strong retention and viral potential.
 
 BRAINSTORM MODE:
 
@@ -573,7 +608,7 @@ Analyze the topic deeply from:
 - audience perspective
 - current trend perspective
 
-Use Google Search when current information is needed.
+Use Google Search when current information is required.
 
 A/B TEST MODE:
 
@@ -631,7 +666,10 @@ st.markdown(
     """
 <div class="mobile-header">
     <h1>🚀 Viral Creator AI</h1>
-    <p>TikTok • Reels • Shorts üçün AI Content Agent</p>
+
+    <p>
+        TikTok • Reels • Shorts üçün AI Content Agent
+    </p>
 </div>
 """,
     unsafe_allow_html=True,
@@ -655,35 +693,40 @@ with st.expander(
     )
 
     st.caption(
-        "API Key bu sessiyada istifadə olunur."
+        "API Key yalnız bu sessiyada istifadə olunur."
     )
 
 
 # ============================================================
-# API KEY CHECK
+# API KEY NOT PROVIDED
 # ============================================================
 
 if not api_key:
 
     st.info(
-        "🚀 Başlamaq üçün yuxarıdakı "
-        "Gemini API Settings bölməsinə API Key əlavə et."
+        "🚀 Başlamaq üçün Gemini API Settings "
+        "bölməsinə API Key əlavə et."
     )
 
     st.markdown(
         """
 <div style="
-    margin-top:22px;
+    margin-top:20px;
     padding:22px;
     border-radius:18px;
     background:#F7F8FA;
     text-align:center;
 ">
 
-    <div style="font-size:40px;">🎯</div>
+    <div style="
+        font-size:38px;
+        margin-bottom:5px;
+    ">
+        🎯
+    </div>
 
     <h3 style="
-        margin:8px 0;
+        margin:5px 0;
         color:#0A192F;
         font-size:20px;
     ">
@@ -710,7 +753,7 @@ if not api_key:
 
 
 # ============================================================
-# GEMINI CONFIGURATION
+# GEMINI
 # ============================================================
 
 try:
@@ -721,7 +764,9 @@ try:
 
     model = genai.GenerativeModel(
         model_name="gemini-3.6-flash",
+
         system_instruction=SYSTEM_INSTRUCTION,
+
         tools=[
             "google_search_retrieval"
         ],
@@ -737,7 +782,7 @@ except Exception as e:
 
 
 # ============================================================
-# CHAT HISTORY
+# OLD MESSAGES
 # ============================================================
 
 for message in st.session_state.messages:
@@ -752,11 +797,16 @@ for message in st.session_state.messages:
 
 
 # ============================================================
-# PLUS MENU
+# ACTION VARIABLES
 # ============================================================
 
 action_prompt = None
 uploaded_file = None
+
+
+# ============================================================
+# PLUS MENU
+# ============================================================
 
 with st.popover("➕"):
 
@@ -804,6 +854,7 @@ with st.popover("➕"):
 
     uploaded_file = st.file_uploader(
         "📎 Şəkil və ya video yüklə",
+
         type=[
             "jpg",
             "jpeg",
@@ -837,7 +888,7 @@ if action_prompt and not user_input:
 
 
 # ============================================================
-# NOTHING TO DO
+# NOTHING SELECTED
 # ============================================================
 
 if not final_input and not uploaded_file:
@@ -846,27 +897,27 @@ if not final_input and not uploaded_file:
 
 
 # ============================================================
-# CONTENT
+# CONTENT PARTS
 # ============================================================
 
 content_parts = []
 
 
 # ============================================================
-# MEDIA UPLOAD
+# MEDIA
 # ============================================================
 
 if uploaded_file:
 
     try:
 
-        file_extension = os.path.splitext(
+        extension = os.path.splitext(
             uploaded_file.name
         )[1]
 
         with tempfile.NamedTemporaryFile(
             delete=False,
-            suffix=file_extension,
+            suffix=extension,
         ) as temp_file:
 
             temp_file.write(
@@ -941,7 +992,7 @@ with st.chat_message("user"):
 
 
 # ============================================================
-# AI RESPONSE
+# AI
 # ============================================================
 
 with st.chat_message("assistant"):
