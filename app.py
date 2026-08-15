@@ -11,140 +11,103 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# ULTRA-CLEAN UI & INTEGRATED CHAT BAR CSS
+# MOBILE-FRIENDLY RESPONSIVE CSS
 st.markdown(
     """
     <style>
-    /* Bütün Səhifə Arxa Fonu */
+    /* Bütün Səhifə */
     .stApp {
         background-color: #FAFAFC !important;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
     }
 
-    /* Streamlit Standart Header/Footer Təmizliyi */
+    /* Gizlədilən standart Streamlit elementləri */
     header, footer, [data-testid="stHeader"] {
         visibility: hidden !important;
         height: 0px !important;
     }
 
     .block-container {
-        padding-top: 1.5rem !important;
+        padding-top: 1rem !important;
         padding-bottom: 7rem !important;
-        max-width: 780px !important;
+        padding-left: 0.8rem !important;
+        padding-right: 0.8rem !important;
+        max-width: 100% !important;
     }
 
     /* Başlıq */
     .app-header {
         text-align: center;
-        margin-bottom: 30px;
+        margin-bottom: 20px;
     }
     .app-header h1 {
-        font-size: 2.1rem;
+        font-size: 1.6rem;
         font-weight: 800;
         color: #0B192C;
-        letter-spacing: -0.5px;
-        margin-bottom: 4px;
+        margin-bottom: 2px;
     }
     .app-header p {
-        font-size: 0.95rem;
+        font-size: 0.85rem;
         color: #64748B;
     }
 
-    /* XÜSUSİ MESAJ BUBBLE-LARI */
+    /* MESAJ KUTULARI (MOBİL UYGUN) */
     .user-bubble-container {
         display: flex;
         justify-content: flex-end;
-        margin-bottom: 14px;
+        margin-bottom: 12px;
         width: 100%;
     }
     .user-bubble {
         background-color: #0B192C;
         color: #FFFFFF;
-        border-radius: 20px 20px 4px 20px;
-        padding: 12px 20px;
-        max-width: 80%;
-        font-size: 0.98rem;
-        line-height: 1.5;
-        box-shadow: 0 4px 12px rgba(11, 25, 44, 0.12);
+        border-radius: 18px 18px 2px 18px;
+        padding: 10px 16px;
+        max-width: 85%;
+        font-size: 0.92rem;
+        line-height: 1.4;
+        word-wrap: break-word;
     }
 
     .ai-bubble-container {
         display: flex;
         justify-content: flex-start;
-        margin-bottom: 18px;
+        margin-bottom: 14px;
         width: 100%;
     }
     .ai-bubble {
         background-color: #F1F5F9;
         color: #0F172A;
         border: 1px solid #E2E8F0;
-        border-radius: 20px 20px 20px 4px;
-        padding: 16px 22px;
-        max-width: 88%;
-        font-size: 0.98rem;
-        line-height: 1.6;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        border-radius: 18px 18px 18px 2px;
+        padding: 12px 16px;
+        max-width: 90%;
+        font-size: 0.92rem;
+        line-height: 1.5;
+        word-wrap: break-word;
     }
 
-    /* BÜTÖV BİRLEŞDİRİLMİŞ İNPUT BAR (INTEGRATED CHAT BAR) */
-    [data-testid="stHorizontalBlock"] {
+    /* MOBİL CHAT İNPUT VƏ POPOVER DÜZƏLİŞİ */
+    div[data-testid="stChatInput"] {
+        border-radius: 28px !important;
         background-color: #FFFFFF !important;
         border: 1.5px solid #CBD5E1 !important;
-        border-radius: 35px !important;
-        padding: 4px 10px !important;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06) !important;
-        align-items: center !important;
-        display: flex !important;
-        gap: 0px !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08) !important;
     }
-    [data-testid="stHorizontalBlock"]:focus-within {
-        border-color: #0B192C !important;
-        box-shadow: 0 8px 25px rgba(11, 25, 44, 0.12) !important;
-    }
-
-    /* Popover (+) Düyməsi - Bütöv Barın Solunda */
-    [data-testid="stPopover"] > button {
-        border-radius: 50% !important;
-        width: 36px !important;
-        height: 36px !important;
-        background-color: transparent !important;
-        color: #0B192C !important;
-        border: none !important;
-        font-size: 20px !important;
-        font-weight: bold !important;
-        padding: 0 !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-    }
-    [data-testid="stPopover"] > button:hover {
-        background-color: #F1F5F9 !important;
-        color: #0B192C !important;
-    }
-
-    /* Input Sahəsinin Çərçivəsini Və Kölgəsini Aradan Qaldırmaq */
-    div[data-testid="stChatInput"] {
-        border: none !important;
-        background: transparent !important;
-        box-shadow: none !important;
-        padding: 0 !important;
-    }
-    div[data-testid="stChatInput"] > div {
-        border: none !important;
-        background: transparent !important;
-        box-shadow: none !important;
-    }
-
-    /* Standart ChatMessage Elementlərini Tam Gizlət */
+    
+    /* Standart ChatMessage Elementlərini Gizlət */
     [data-testid="stChatMessage"] {
         display: none !important;
     }
 
-    /* Göndərmə Ox Düyməsi */
-    button[aria-label="Send message"] {
-        background-color: #0B192C !important;
-        color: #FFFFFF !important;
-        border-radius: 50% !important;
+    /* Telefonda Sütunların Üst-Üstə Düşməsini Önlemek */
+    @media (max-width: 768px) {
+        .block-container {
+            padding-bottom: 8rem !important;
+        }
+        .user-bubble, .ai-bubble {
+            max-width: 92% !important;
+        }
     }
     </style>
 """,
@@ -162,7 +125,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Sidebar
+# Sidebar (API Key və Ayarlar)
 with st.sidebar:
   st.title("⚙️ Tənzimləmələr")
   api_key = st.text_input("Google AI Studio API Key:", type="password")
@@ -192,7 +155,7 @@ if api_key:
   if "messages" not in st.session_state:
     st.session_state.messages = []
 
-  # MESAJLARIN XÜSUSİ HTML İLƏ RENDER EDİLMƏSİ
+  # MESAJLARIN RENDER EDİLMƏSİ
   for msg in st.session_state.messages:
     if msg["role"] == "user":
       st.markdown(
@@ -207,40 +170,26 @@ if api_key:
           unsafe_allow_html=True,
       )
 
-  # Bütöv Birləşdirilmiş Input Paneli
-  col_plus, col_input = st.columns([0.8, 9.2])
+  # Mobil Uyğun Alət və Yükləmə Menyusu
+  with st.expander("🛠️ Rejimlər və Fayl Yüklə", expanded=False):
+    action_type = st.radio(
+        "Rejim:",
+        ["Standard", "🔍 Dərin Research", "💡 Brainstorm", "🧪 A/B Test Generator"],
+        horizontal=True,
+    )
+    uploaded_file = st.file_uploader(
+        "Media yüklə:", type=["jpg", "jpeg", "png", "mp4", "mov"]
+    )
 
-  uploaded_file = None
-  action_type = "Standard"
-
-  with col_plus:
-    with st.popover("＋", help="Alətlər və Media"):
-      st.markdown("**🛠️ Rejimlər:**")
-      action_type = st.radio(
-          "İş rejimini seçin:",
-          [
-              "Standard",
-              "🔍 Dərin Research",
-              "💡 Brainstorm",
-              "🧪 A/B Test Generator",
-          ],
-          label_visibility="collapsed",
-      )
-      st.markdown("---")
-      st.markdown("**📎 Media Yüklə:**")
-      uploaded_file = st.file_uploader(
-          "Fayl seçin:",
-          type=["jpg", "jpeg", "png", "mp4", "mov"],
-          label_visibility="collapsed",
-      )
-
-  with col_input:
-    user_input = st.chat_input("Mesaj yazın...")
+  # Əsas Chat Paneli
+  user_input = st.chat_input("Mesaj yazın...")
 
   if uploaded_file:
     st.toast(f"📎 Fayl seçildi: {uploaded_file.name}", icon="✅")
 
-  if user_input or uploaded_file:
+  if user_input or (
+      'uploaded_file' in locals() and uploaded_file is not None
+  ):
     content_parts = []
     prefix_prompt = f"[PLATFORMA: {platform}] "
 
@@ -310,4 +259,4 @@ if api_key:
         mime="text/plain",
     )
 else:
-  st.warning("Sol paneldən API Key daxil edin.")
+  st.warning("Sol paneldən (Sidebar) API Key daxil edin.")
