@@ -18,24 +18,20 @@ st.set_page_config(
 
 
 # ============================================================
-# MOBILE-FIRST CSS
+# MOBILE UI
 # ============================================================
 
 def inject_mobile_css():
-
     st.markdown(
         """
         <style>
-
-        /* =====================================================
-           GLOBAL
-        ===================================================== */
 
         * {
             box-sizing: border-box;
         }
 
-        html, body {
+        html,
+        body {
             margin: 0 !important;
             padding: 0 !important;
             width: 100% !important;
@@ -54,8 +50,6 @@ def inject_mobile_css():
                 Roboto,
                 sans-serif !important;
         }
-
-        /* Remove Streamlit top spacing */
 
         header {
             display: none !important;
@@ -77,27 +71,20 @@ def inject_mobile_css():
             background: #ffffff !important;
         }
 
-
-        /* =====================================================
-           MAIN CONTAINER
-        ===================================================== */
+        /* MAIN */
 
         .main .block-container {
             width: 100% !important;
             max-width: 900px !important;
-
             margin: 0 auto !important;
 
-            padding-top: 14px !important;
+            padding-top: 12px !important;
             padding-bottom: 105px !important;
-            padding-left: 12px !important;
-            padding-right: 12px !important;
+            padding-left: 10px !important;
+            padding-right: 10px !important;
         }
 
-
-        /* =====================================================
-           HEADER
-        ===================================================== */
+        /* HEADER */
 
         .mobile-header {
             width: 100%;
@@ -118,13 +105,9 @@ def inject_mobile_css():
             margin: 6px 0 0 0 !important;
             color: #718096 !important;
             font-size: 13px !important;
-            line-height: 1.4 !important;
         }
 
-
-        /* =====================================================
-           CHAT AREA
-        ===================================================== */
+        /* CHAT */
 
         [data-testid="stChatMessage"] {
             width: fit-content !important;
@@ -143,13 +126,9 @@ def inject_mobile_css():
             word-break: break-word !important;
         }
 
-        /* Avatar */
-
         [data-testid="stChatMessageAvatar"] {
             display: none !important;
         }
-
-        /* Message content */
 
         [data-testid="stChatMessageContent"] {
             width: 100% !important;
@@ -165,26 +144,11 @@ def inject_mobile_css():
             margin-bottom: 0 !important;
         }
 
-        /* Markdown */
-
         [data-testid="stChatMessageContent"] pre {
             max-width: 100% !important;
             overflow-x: auto !important;
             border-radius: 10px !important;
         }
-
-        [data-testid="stChatMessageContent"] code {
-            word-break: break-word !important;
-        }
-
-        [data-testid="stChatMessageContent"] table {
-            display: block !important;
-            max-width: 100% !important;
-            overflow-x: auto !important;
-            white-space: nowrap !important;
-        }
-
-        /* Images */
 
         [data-testid="stChatMessageContent"] img {
             max-width: 100% !important;
@@ -192,10 +156,13 @@ def inject_mobile_css():
             border-radius: 12px !important;
         }
 
+        [data-testid="stChatMessageContent"] table {
+            display: block !important;
+            max-width: 100% !important;
+            overflow-x: auto !important;
+        }
 
-        /* =====================================================
-           STREAMLIT CHAT INPUT
-        ===================================================== */
+        /* CHAT INPUT */
 
         [data-testid="stChatInput"] {
             position: fixed !important;
@@ -208,10 +175,10 @@ def inject_mobile_css():
 
             z-index: 999999 !important;
 
-            background: rgba(255,255,255,0.96) !important;
+            background: rgba(255, 255, 255, 0.97) !important;
 
-            backdrop-filter: blur(14px) !important;
-            -webkit-backdrop-filter: blur(14px) !important;
+            backdrop-filter: blur(15px) !important;
+            -webkit-backdrop-filter: blur(15px) !important;
 
             border-top: 1px solid #E7EAF0 !important;
 
@@ -235,7 +202,7 @@ def inject_mobile_css():
 
             border: 1px solid #D9DEE7 !important;
 
-            background: #FFFFFF !important;
+            background: #ffffff !important;
 
             color: #172033 !important;
 
@@ -243,26 +210,17 @@ def inject_mobile_css():
 
             padding: 12px 48px 12px 16px !important;
 
-            box-shadow: 0 2px 10px rgba(10,25,47,0.04) !important;
-
             outline: none !important;
+
+            box-shadow:
+                0 2px 10px rgba(10, 25, 47, 0.05) !important;
         }
 
         [data-testid="stChatInput"] textarea:focus {
             border-color: #1A73E8 !important;
-            box-shadow:
-                0 0 0 2px rgba(26,115,232,0.10) !important;
         }
 
-        [data-testid="stChatInputSubmitButton"] {
-            width: 38px !important;
-            height: 38px !important;
-        }
-
-
-        /* =====================================================
-           BUTTONS
-        ===================================================== */
+        /* BUTTONS */
 
         .stButton > button {
             min-height: 46px !important;
@@ -276,22 +234,9 @@ def inject_mobile_css():
 
             background: #F7F8FA !important;
             color: #172033 !important;
-
-            transition: 0.15s ease !important;
         }
 
-        .stButton > button:active {
-            transform: scale(0.98) !important;
-        }
-
-
-        /* =====================================================
-           POPOVER
-        ===================================================== */
-
-        [data-testid="stPopover"] {
-            width: 100% !important;
-        }
+        /* PLUS BUTTON */
 
         [data-testid="stPopover"] > button {
             width: 48px !important;
@@ -312,10 +257,7 @@ def inject_mobile_css():
             font-size: 23px !important;
         }
 
-
-        /* =====================================================
-           FILE UPLOADER
-        ===================================================== */
+        /* FILE UPLOADER */
 
         [data-testid="stFileUploader"] {
             width: 100% !important;
@@ -331,54 +273,32 @@ def inject_mobile_css():
             background: #FAFBFC !important;
         }
 
-        [data-testid="stFileUploaderDropzone"] * {
-            font-size: 13px !important;
-        }
-
-
-        /* =====================================================
-           ALERT
-        ===================================================== */
+        /* ALERTS */
 
         [data-testid="stAlert"] {
             border-radius: 14px !important;
             font-size: 14px !important;
         }
 
-
-        /* =====================================================
-           SPINNER
-        ===================================================== */
-
-        [data-testid="stSpinner"] {
-            font-size: 14px !important;
-        }
-
-
-        /* =====================================================
-           SIDEBAR
-        ===================================================== */
+        /* SIDEBAR */
 
         [data-testid="stSidebar"] {
-            background: #FFFFFF !important;
+            background: #ffffff !important;
         }
 
         [data-testid="stSidebar"] > div:first-child {
             padding: 20px 16px !important;
         }
 
-
-        /* =====================================================
-           MOBILE BREAKPOINT
-        ===================================================== */
+        /* MOBILE */
 
         @media (max-width: 600px) {
 
             .main .block-container {
                 max-width: 100% !important;
 
-                padding-left: 9px !important;
-                padding-right: 9px !important;
+                padding-left: 8px !important;
+                padding-right: 8px !important;
 
                 padding-top: 8px !important;
                 padding-bottom: 100px !important;
@@ -397,12 +317,9 @@ def inject_mobile_css():
             }
 
             [data-testid="stChatMessage"] {
-                max-width: 91% !important;
-
+                max-width: 92% !important;
                 padding: 10px 13px !important;
-
                 border-radius: 17px !important;
-
                 font-size: 15px !important;
             }
 
@@ -416,10 +333,7 @@ def inject_mobile_css():
             }
         }
 
-
-        /* =====================================================
-           VERY SMALL PHONES
-        ===================================================== */
+        /* SMALL PHONES */
 
         @media (max-width: 360px) {
 
@@ -433,28 +347,8 @@ def inject_mobile_css():
             }
 
             .main .block-container {
-                padding-left: 7px !important;
-                padding-right: 7px !important;
-            }
-        }
-
-
-        /* =====================================================
-           LANDSCAPE MOBILE
-        ===================================================== */
-
-        @media (
-            max-width: 900px
-        ) and (
-            orientation: landscape
-        ) {
-
-            .main .block-container {
-                padding-bottom: 90px !important;
-            }
-
-            .mobile-header {
-                padding-bottom: 7px !important;
+                padding-left: 6px !important;
+                padding-right: 6px !important;
             }
         }
 
@@ -471,42 +365,43 @@ def inject_mobile_css():
 SYSTEM_INSTRUCTION = """
 You are Viral Creator AI.
 
-You are an expert in:
-- TikTok
-- Instagram Reels
-- YouTube Shorts
+You are an expert in TikTok, Instagram Reels and YouTube Shorts.
+
+Your expertise includes:
+
+- viral hooks
 - retention
-- hooks
 - storytelling
 - audience psychology
 - content strategy
 - trend analysis
 - social media algorithms
-
-Your job is to give practical, high-quality answers.
+- A/B testing
+- short-form video structure
 
 MODES:
 
-1. BRAINSTORM
-Generate 3 strong video concepts.
-Each concept should contain:
-- Hook
-- Core idea
-- Retention mechanism
-- Suggested ending
-- CTA
+BRAINSTORM:
+Generate 3 strong viral video concepts.
 
-2. DEEP RESEARCH
-Analyze the topic deeply from:
+For every concept provide:
+1. Hook
+2. Core idea
+3. Retention mechanism
+4. Ending
+5. CTA
+
+DEEP RESEARCH:
+Analyze the subject from:
 - algorithmic perspective
 - psychological perspective
 - visual perspective
 - retention perspective
 - audience perspective
 
-If real-time information is required, use Google Search.
+Use Google Search when current information is required.
 
-3. A/B TEST
+A/B TEST:
 Create:
 - Hook A
 - Hook B
@@ -515,14 +410,14 @@ Create:
 - CTA A
 - CTA B
 
-Then explain which version is more likely to perform and why.
+Then explain which version is stronger and why.
 
 Always prioritize:
-- strong hooks
 - curiosity
 - emotional tension
-- retention
 - specificity
+- strong hooks
+- retention
 - practical value
 
 Avoid generic motivational clichés.
@@ -536,35 +431,17 @@ Avoid generic motivational clichés.
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-if "pending_action" not in st.session_state:
-    st.session_state.pending_action = None
-
-if "uploaded_file" not in st.session_state:
-    st.session_state.uploaded_file = None
-
 
 # ============================================================
-# API KEY
+# CSS
 # ============================================================
 
-api_key = st.sidebar.text_input(
-    "Google Gemini API Key",
-    type="password",
-    placeholder="AIza...",
-)
-
-st.sidebar.markdown("---")
-
-st.sidebar.caption(
-    "API Key yalnız bu Streamlit sessiyası üçün istifadə olunur."
-)
+inject_mobile_css()
 
 
 # ============================================================
 # HEADER
 # ============================================================
-
-inject_mobile_css()
 
 st.markdown(
     """
@@ -578,27 +455,56 @@ st.markdown(
 
 
 # ============================================================
-# API KEY YOXDURSA
+# SIDEBAR
+# ============================================================
+
+with st.sidebar:
+
+    st.title("⚙️ Settings")
+
+    st.write(
+        "Gemini API Key daxil et."
+    )
+
+    api_key = st.text_input(
+        "Google Gemini API Key",
+        type="password",
+        placeholder="AIza...",
+    )
+
+    st.divider()
+
+    st.caption(
+        "API Key bu Streamlit sessiyasında istifadə olunur."
+    )
+
+
+# ============================================================
+# API KEY CHECK
 # ============================================================
 
 if not api_key:
 
     st.info(
-        "🚀 Başlamaq üçün yuxarıdakı menyudan Google Gemini API Key əlavə et."
+        "🚀 Başlamaq üçün sol/yuxarı menyudan Gemini API Key əlavə et."
     )
 
     st.markdown(
         """
         <div style="
             margin-top:25px;
-            padding:20px;
+            padding:22px;
             border-radius:18px;
             background:#F7F8FA;
             text-align:center;
         ">
-            <div style="font-size:38px;">🎯</div>
 
-            <h3 style="margin:8px 0;color:#0A192F;">
+            <div style="font-size:40px;">🎯</div>
+
+            <h3 style="
+                margin:8px 0;
+                color:#0A192F;
+            ">
                 Viral Creator AI
             </h3>
 
@@ -606,10 +512,13 @@ if not api_key:
                 color:#64748B;
                 font-size:14px;
                 margin:0;
+                line-height:1.5;
             ">
-                Hook yarat, trend araşdır, A/B test et və
-                videolarını analiz etdir.
+                Viral ideyalar yarat.
+                Videoları analiz et.
+                Hook və CTA-ları test et.
             </p>
+
         </div>
         """,
         unsafe_allow_html=True,
@@ -624,11 +533,16 @@ if not api_key:
 
 try:
 
-    client = genai.Client(api_key=api_key)
+    client = genai.Client(
+        api_key=api_key
+    )
 
 except Exception as e:
 
-    st.error(f"Gemini Client xətası: {e}")
+    st.error(
+        f"Gemini bağlantı xətası: {e}"
+    )
+
     st.stop()
 
 
@@ -638,21 +552,27 @@ except Exception as e:
 
 for message in st.session_state.messages:
 
-    role = message["role"]
+    with st.chat_message(
+        message["role"]
+    ):
 
-    with st.chat_message(role):
-        st.markdown(message["content"])
+        st.markdown(
+            message["content"]
+        )
 
 
 # ============================================================
-# MOBILE ACTION BUTTON
+# PLUS MENU
 # ============================================================
 
 action_prompt = None
+uploaded_file = None
 
 with st.popover("➕"):
 
-    st.markdown("### Ağıllı Rejimlər")
+    st.markdown(
+        "### 🧠 Ağıllı Rejimlər"
+    )
 
     if st.button(
         "💡 Brainstorm",
@@ -660,8 +580,8 @@ with st.popover("➕"):
     ):
 
         action_prompt = (
-            "Mənim üçün 3 yüksək retention ehtimallı "
-            "viral video ideyası brainstorm et."
+            "Mənim üçün 3 yüksək retention "
+            "ehtimallı viral video ideyası brainstorm et."
         )
 
     if st.button(
@@ -670,8 +590,9 @@ with st.popover("➕"):
     ):
 
         action_prompt = (
-            "Bu mövzunu dərin araşdır və "
-            "alqoritmik, psixoloji və vizual baxımdan analiz et:"
+            "Aşağıdakı mövzunu dərin araşdır. "
+            "Alqoritmik, psixoloji, vizual və "
+            "retention baxımından analiz et:"
         )
 
     if st.button(
@@ -697,6 +618,7 @@ with st.popover("➕"):
             "mov",
             "webm",
         ],
+        label_visibility="visible",
     )
 
 
@@ -710,32 +632,30 @@ user_input = st.chat_input(
 
 
 # ============================================================
-# FINAL INPUT
+# DETERMINE INPUT
 # ============================================================
 
 final_input = user_input
 
 if action_prompt and not user_input:
+
     final_input = action_prompt
 
 
-# ============================================================
-# NO INPUT
-# ============================================================
-
 if not final_input and not uploaded_file:
+
     st.stop()
 
 
 # ============================================================
-# BUILD GEMINI CONTENT
+# CONTENT PARTS
 # ============================================================
 
 content_parts = []
 
 
 # ============================================================
-# MEDIA
+# FILE UPLOAD
 # ============================================================
 
 if uploaded_file:
@@ -757,19 +677,22 @@ if uploaded_file:
 
             tmp_path = tmp.name
 
+        with st.spinner(
+            "📎 Media emal olunur..."
+        ):
 
-        with st.spinner("📎 Media emal olunur..."):
-
-            uploaded = client.files.upload(
+            media_file = client.files.upload(
                 file=tmp_path
             )
 
-        content_parts.append(uploaded)
+        content_parts.append(
+            media_file
+        )
 
     except Exception as e:
 
         st.error(
-            f"Fayl yüklənərkən xəta baş verdi: {e}"
+            f"Media yükləmə xətası: {e}"
         )
 
         st.stop()
@@ -785,11 +708,13 @@ prompt_text = (
     else "Bu media faylını analiz et."
 )
 
-content_parts.append(prompt_text)
+content_parts.append(
+    prompt_text
+)
 
 
 # ============================================================
-# SHOW USER MESSAGE
+# USER MESSAGE
 # ============================================================
 
 st.session_state.messages.append(
@@ -800,16 +725,21 @@ st.session_state.messages.append(
 )
 
 with st.chat_message("user"):
-    st.markdown(prompt_text)
+
+    st.markdown(
+        prompt_text
+    )
 
 
 # ============================================================
-# GENERATE RESPONSE
+# AI RESPONSE
 # ============================================================
 
 with st.chat_message("assistant"):
 
-    with st.spinner("Agent düşünür..."):
+    with st.spinner(
+        "Agent cavab hazırlayır..."
+    ):
 
         try:
 
@@ -833,7 +763,9 @@ with st.chat_message("assistant"):
 
             answer = response.text
 
-            st.markdown(answer)
+            st.markdown(
+                answer
+            )
 
             st.session_state.messages.append(
                 {
@@ -843,3 +775,7 @@ with st.chat_message("assistant"):
             )
 
         except Exception as e:
+
+            st.error(
+                f"Gemini xətası: {e}"
+            )
