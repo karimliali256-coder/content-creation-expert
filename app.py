@@ -11,30 +11,23 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# 2. Custom CSS: Gemini Chat UI Dizaynı, Rənglər və Animasiya
+# 2. Custom CSS: Həm Mobildə, Həm Kompüterdə Gemini Chat UI Dizaynı, Rənglər və API Xəbərdarlığı
 st.markdown(
     """
     <style>
     /* Bütün səhifə üçün təmiz ağ fon */
     .stApp {
-        background-color: #FFFFFF;
+        background-color: #FFFFFF !important;
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    }
-
-    /* Giriş Animasiyası (Yüngül Motion) */
-    @keyframes slideUp {
-        from { opacity: 0; transform: translateY(15px); }
-        to { opacity: 1; transform: translateY(0); }
     }
 
     /* Başlıq sahəsi */
     .main-header {
         text-align: center;
         padding: 30px 0 20px 0;
-        animation: slideUp 0.5s ease-out;
     }
     .main-header h1 {
-        color: #0A192F; /* Navy Blue */
+        color: #0A192F !important; /* Navy Blue */
         font-size: 2.2rem;
         font-weight: 700;
         margin-bottom: 5px;
@@ -44,13 +37,26 @@ st.markdown(
         font-size: 0.95rem;
     }
 
-    /* --- Çat Mesajları Dizaynı (Gemini Style) --- */
+    /* --- API Xəbərdarlığı Dizaynı (Sarı-Ağ yox, Tünd Mavi-Ağ) --- */
+    [data-testid="stWarning"] {
+        background-color: #0A192F !important; /* Navy Blue fon */
+        color: #FFFFFF !important; /* Ağ mətn */
+        border: 1px solid #DADCE0;
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    [data-testid="stWarning"] .stAlertContent {
+        color: #FFFFFF !important; /* Mətnin daxili rəngini də ağ et */
+    }
+
+    /* --- Çat Mesajları Dizaynı (Mobildə və Kompüterdə Eyni Gemini Style) --- */
     [data-testid="stChatMessage"] {
-        animation: slideUp 0.3s ease-out !important;
         padding: 1rem !important;
         margin-bottom: 0.8rem !important;
         border-radius: 20px !important;
-        max-width: 85% !important;
+        max-width: 80% !important; /* Mobildə daha dar etmək üçün */
     }
 
     /* İstifadəçi Mesajı (Zəngin Mavi) */
@@ -60,56 +66,73 @@ st.markdown(
         margin-left: auto !important; /* Sağ tərəfə söykə */
         border-bottom-right-radius: 5px !important;
     }
+    [data-testid="stChatMessage"]:has([data-testid="stChatMessageContent"]:contains("user")) .stAlertContent {
+        color: #FFFFFF !important;
+    }
 
     /* Çatbot (Gemini) Mesajı (Boz) */
     [data-testid="stChatMessage"]:has([data-testid="stChatMessageContent"]:contains("assistant")) {
-        background-color: #F0F2F5 !important; /* Gray */
-        color: #1F1F1F !important;
+        background-color: #F0F2F5 !important; /* Gray fon */
+        color: #1F1F1F !important; /* Qara mətn */
         margin-right: auto !important; /* Sol tərəfə söykə */
         border-bottom-left-radius: 5px !important;
     }
+    [data-testid="stChatMessage"]:has([data-testid="stChatMessageContent"]:contains("assistant")) .stAlertContent {
+        color: #1F1F1F !important;
+    }
 
-    /* Avatar simgələrini gizlət (Tam təmiz görünüş üçün) */
+    /* Avatar simgələrini gizlət (Həm mobildə, həm kompüterdə təmiz görünüş üçün) */
     [data-testid="stChatMessageAvatar"] {
         display: none !important;
     }
 
-    /* --- Aşağı Giriş Sahəsi Dizaynı --- */
-    /* Çat giriş sahəsi (Ağ) */
+    /* --- Aşağı Giriş Sahəsi Dizaynı (Düzgün Hizalanma və Rənglər) --- */
+    /* Çat giriş sütunu layout */
     [data-testid="stChatInput"] {
-        background-color: #FFFFFF !important;
+        background-color: transparent !important; /* Fonu təmizlə */
+        border: none !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    /* Giriş mətn qutusu (Oval və Ağ) */
+    [data-testid="stChatInput"] input {
+        background-color: #FFFFFF !important; /* Ağ fon */
         border: 1px solid #DADCE0 !important;
         border-radius: 28px !important;
-        padding-left: 15px !important;
+        padding: 10px 15px !important;
+        color: #1F1F1F !important;
         box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
     }
 
-    /* Göndər düyməsi (Navy Blue) */
+    /* Göndər düyməsi (Tünd Navy Blue) */
     [data-testid="stChatInputSubmitBtn"] {
-        background-color: #0A192F !important; /* Navy Blue */
-        color: #FFFFFF !important;
+        background-color: #0A192F !important; /* Navy Blue fon */
+        color: #FFFFFF !important; /* Ağ ok */
         border-radius: 50% !important;
         width: 40px !important;
         height: 40px !important;
+        top: auto !important;
+        bottom: 5px !important;
+        right: 5px !important;
     }
 
-    /* '+' Popover Düyməsi Style */
-    [data-testid="stPopover"] > button {
-        border-radius: 50% !important;
-        width: 45px !important;
-        height: 45px !important;
-        background-color: #F0F2F5 !important; /* Boz fon */
-        color: #0A192F !important; /* Navy Blue icon */
-        border: 1px solid #DADCE0 !important;
-        font-size: 22px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        transition: transform 0.2s ease !important;
-    }
-    [data-testid="stPopover"] > button:hover {
-        background-color: #E8EAED !important;
-        transform: scale(1.05);
+    /* '+' Düyməsi (Fayl yükləmək üçün, sol sütunda, boz oval) */
+    .file-upload-plus {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 45px;
+        height: 45px;
+        background-color: #F0F2F5; /* Boz fon */
+        color: #0A192F; /* Navy Blue '+' */
+        border: 1px solid #DADCE0;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 24px;
+        text-decoration: none;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        margin-right: 10px;
     }
 
     /* Media elementlərinin künclərini oval et */
@@ -131,7 +154,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Sol panel: API Key Girişi
+# Sol panel: API Key Girişi (Məxfi saxlamaq üçün sidebar-da qalsın)
 with st.sidebar:
   st.title("⚙️ Tənzimləmələr")
   st.markdown("Tətbiqi işlətmək üçün Google AI Studio API Keyinizi daxil edin.")
@@ -166,43 +189,20 @@ if api_key:
     with st.chat_message(msg["role"]):
       st.markdown(msg["content"])
 
-  # 6. Giriş Sahəsi Layout: '+' Düyməsi və Mətn Girişi
+  # 6. Giriş Sahəsi Layout: '+' Düyməsi və Mətn Girişi (Düzgün Hizalama)
   input_col1, input_col2 = st.columns([1, 8])
 
-  action_prompt = None
-  uploaded_file = None
-
   with input_col1:
-    with st.popover("➕", help="Funksiyalar və Media"):
-      st.markdown("**Ağıllı Rejimlər:**")
-      if st.button("💡 Brainstorm et", use_container_width=True):
-        action_prompt = "Mənim üçün bu mövzuda 3 viral video ideyası brainstorm et:"
-      if st.button("🔍 Deep Research", use_container_width=True):
-        action_prompt = "Aşağıdakı mövzunu və ya faylı alqoritmik və psixoloji baxımdan dərin analiz (Deep Research) et:"
-      if st.button("🅰️/🅱️ A/B Test Generator", use_container_width=True):
-        action_prompt = "Bu mövzu/video üçün 2 fərqli Hook və Başlıq variantı ilə A/B Test ssenarisi hazırla:"
-
-      st.divider()
-      uploaded_file = st.file_uploader(
-          "📎 Fayl əlavə et:",
-          type=["jpg", "jpeg", "png", "mp4", "mov"],
-          label_visibility="visible",
-      )
+    # Fayl yükləmək üçün '+' düyməsini oval və boz etmək
+    uploaded_file = st.file_uploader("", type=["jpg", "jpeg", "png", "mp4", "mov"], label_visibility="collapsed")
+    st.markdown('<label for="file_uploader" class="file-upload-plus">+</label>', unsafe_allow_html=True)
 
   with input_col2:
     # AĞ rəngdə çat input, GÖNDƏR düyməsi NAVY rəngdə
     user_input = st.chat_input("Fikir yazın və ya 'Dərin analiz et' deyin...")
 
-  # Hansı girişin istifadə edildiyini müəyyən etmək
-  final_input = user_input
-  if action_prompt and not user_input:
-    final_input = action_prompt
-
-  if uploaded_file and action_prompt:
-    st.toast(f"📎 Rejim və Media seçildi!", icon="🚀")
-
   # Göndərmə prosesi
-  if final_input or uploaded_file:
+  if user_input or uploaded_file:
     content_parts = []
 
     if uploaded_file:
@@ -220,15 +220,18 @@ if api_key:
 
       content_parts.append(media_file)
 
-    prompt_text = final_input if final_input else "Bu faylı analiz et."
+    if user_input:
+        prompt_text = user_input
+    else:
+        prompt_text = "Bu faylı analiz et."
     content_parts.append(prompt_text)
 
-    # İstifadəçi mesajını yaddaşa yazmaq və göstərmək (ZƏNGİN MAVİ)
+    # İstifadəçi mesajını yaddaşa yazmaq və göstərmək (ZƏNGİN MAVİ, sağda, oval)
     st.session_state.messages.append({"role": "user", "content": prompt_text})
     with st.chat_message("user"):
       st.markdown(prompt_text)
 
-    # AI Cavabının hazırlanması və göstərilməsi (BOZ)
+    # AI Cavabının hazırlanması və göstərilməsi (BOZ, solda, oval)
     with st.chat_message("assistant"):
       with st.spinner("Viral Agent cavab hazırlayır..."):
         try:
@@ -240,4 +243,5 @@ if api_key:
         except Exception as e:
           st.error(f"Xəta baş verdi: {e}")
 else:
-  st.warning("Zəhmət olmasa sol paneldən API Key daxil edin.")
+    # --- DÜZƏLİŞ: API Xəbərdarlığı İndi Tam Oxunaqlıdır (Mobildə və Kompüterdə) ---
+    st.warning("🚀 Tətbiqi işlətmək üçün zəhmət olmasa sol paneldən (Settings) API Key daxil edin.")
