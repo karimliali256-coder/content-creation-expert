@@ -139,7 +139,7 @@ if api_key:
 
   # Ən son güncəl Gemini modeli
   model = genai.GenerativeModel(
-      model_name="gemini-2.0-flash",
+      model_name="gemini-3.6-flash",
       system_instruction=SYSTEM_INSTRUCTION,
   )
 
