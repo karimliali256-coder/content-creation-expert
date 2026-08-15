@@ -141,6 +141,7 @@ if api_key:
   model = genai.GenerativeModel(
       model_name="gemini-3.6-flash",
       system_instruction=SYSTEM_INSTRUCTION,
+      tools=["google_search_retrieval"]  # Canlı web research imkanı əlavə edir
   )
 
   # Sesiyaların yadda saxlanması
